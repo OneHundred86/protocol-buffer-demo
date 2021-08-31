@@ -1,0 +1,16 @@
+{
+    "name": "protobuf/test",
+    "autoload": {
+        "psr-4": {
+            "Protobuf\\Test\\": "src/",
+            "GPBMetadata\\": "proto_php/GPBMetadata",
+            "Message\\": "proto_php/Message"
+        }
+    },
+    "authors": [
+        {
+            "name": "chenguangjun",
+            "email": "chen.gj@qq.com"
+        }
+    ]
+}
