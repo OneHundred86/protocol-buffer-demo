@@ -1,7 +1,7 @@
 #### 一、根据proto文件生成代码
 
 ```shell
-build_proto.sh
+./build_proto.sh
 ```
 
 
