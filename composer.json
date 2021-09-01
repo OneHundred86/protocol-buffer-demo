@@ -12,5 +12,10 @@
             "name": "chenguangjun",
             "email": "chen.gj@qq.com"
         }
-    ]
+    ],
+    "require": {
+        "swoole/ide-helper": "^4.5",
+        "google/protobuf": "^3.17",
+        "psy/psysh": "@stable"
+    }
 }
