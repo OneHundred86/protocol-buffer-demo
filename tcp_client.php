@@ -21,7 +21,10 @@ run(function () use($ip, $port) {
     $bar->setFoo($foo);
     $bar->setName("张三");
 
-    $client->send($bar->serializeToString());
+    # 定义协议，前4个字节表示消息头（用于路由），后面内容表示消息体
+    # 1表示使用 \Message\Foo 作为消息体
+    $bin = \Protobuf\Test\Lib\Pt::int2bin(1) . $bar->serializeToString();
+    $client->send($bin);
 
     echo $client->recv();
     $client->close();

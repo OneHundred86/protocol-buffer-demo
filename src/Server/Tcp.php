@@ -6,6 +6,7 @@ namespace Protobuf\Test\Server;
 
 use Message\Bar;
 use Message\Foo;
+use Protobuf\Test\Lib\Pt;
 use Swoole\WebSocket\Frame;
 
 class Tcp
@@ -49,16 +50,18 @@ class Tcp
 
     public function onReceive($server, $fd, $reactor_id, $data)
     {
-        echo sprintf("[%d] receive: %s", $fd, $data) . PHP_EOL;
+        echo sprintf("[%d] receive msg", $fd) . PHP_EOL;
 
-        $foo = new Foo();
-        $foo->mergeFromString($data);
-        var_dump($foo->getId());
+        [$route, $bin] = Pt::bin2int($data);
 
-        $bar = new Bar();
-        $bar->mergeFromString($data);
-        var_dump($bar->getFoo()->getId());
-        var_dump($bar->getName());
+        if($route == 1){
+            $bar = new Bar();
+            $bar->mergeFromString($bin);
+            var_dump($bar->getFoo()->getId());
+            var_dump($bar->getName());
+        }else{
+            echo sprintf("unknown route: %s", $route) . PHP_EOL;
+        }
 
         $server->send($fd, $data);
     }
