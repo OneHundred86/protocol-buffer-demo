@@ -52,18 +52,23 @@ class Tcp
     {
         echo sprintf("[%d] receive msg", $fd) . PHP_EOL;
 
-        [$route, $bin] = Pt::bin2int($data);
+        try {
+            [$route, $bin] = Pt::bin2int($data);
 
-        if($route == 1){
-            $bar = new Bar();
-            $bar->mergeFromString($bin);
-            var_dump($bar->getFoo()->getId());
-            var_dump($bar->getName());
-        }else{
-            echo sprintf("unknown route: %s", $route) . PHP_EOL;
+            if($route == 1){
+                $bar = new Bar();
+                $bar->mergeFromString($bin);
+                var_dump($bar->getFoo()->getId());
+                var_dump($bar->getName());
+            }else{
+                echo sprintf("unknown route: %s", $route) . PHP_EOL;
+            }
+
+            $server->send($fd, $data);
+        }catch (\Exception $e){
+            echo sprintf("Exception: %s", $e->getMessage()) . PHP_EOL;
         }
 
-        $server->send($fd, $data);
     }
 
     public function onClose($server, $fd)
