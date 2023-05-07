@@ -11,7 +11,11 @@ use Swoole\WebSocket\Frame;
 
 class Tcp
 {
-    protected $server;
+    // 服务器
+    protected \Swoole\Server $server;
+
+    // 当前剩下的窗口字节 [$fd => binary]
+    protected $binLeftMap;
 
     public static function start(string $ip, int $port)
     {
@@ -46,6 +50,8 @@ class Tcp
     public function onConnect($server, $fd)
     {
         echo sprintf("[%s] connect", $fd) . PHP_EOL;
+
+        $this->binLeftMap[$fd] = "";
     }
 
     public function onReceive($server, $fd, $reactor_id, $data)
@@ -53,7 +59,18 @@ class Tcp
         echo sprintf("[%d] receive msg", $fd) . PHP_EOL;
 
         try {
-            [$route, $bin] = Pt::bin2int($data);
+            // 解决粘包问题
+            $this->binLeftMap[$fd] .= $data;
+            [$msgLen, $bin] = Pt::bin2int($this->binLeftMap[$fd]);
+            if(strlen($bin) < $msgLen){
+                return;
+            }
+            // 只获取一个包的binary
+            $routeAndMsgBin = substr($bin, 0, $msgLen);
+            $this->binLeftMap[$fd] = substr($bin, $msgLen);
+
+
+            [$route, $bin] = Pt::bin2int($routeAndMsgBin);
 
             // 根据路由反系列化binary到class
             switch ($route){
@@ -83,5 +100,6 @@ class Tcp
     public function onClose($server, $fd)
     {
         echo sprintf("[%s] close", $fd) . PHP_EOL;
+        unset($this->binLeftMap[$fd]);
     }
 }

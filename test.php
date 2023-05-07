@@ -15,6 +15,8 @@ $bar->setHobbies(["basketball", "football"]);
 // 将class系列化为为binary
 $bin = $bar->serializeToString();
 
+echo strlen($bin) . PHP_EOL;
+
 echo "系列化：\n";
 var_dump($bin);
 
