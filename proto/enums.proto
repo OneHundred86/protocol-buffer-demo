@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package pt.enums;
+
+enum Sex {
+  FEMALE = 0;   // 女
+  MALE = 1;     // 男
+}

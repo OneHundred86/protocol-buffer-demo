@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Message;
+package pt.message;
 
 message Foo {
 	int32 id = 1;

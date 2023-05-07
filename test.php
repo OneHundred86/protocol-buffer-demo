@@ -3,18 +3,36 @@ require "./vendor/autoload.php";
 
 
 # 序列化(将类转化成二进制)
-$foo = new Message\Foo;
+$foo = new \Pt\Message\Foo;
 $foo->setId(123);
 
-$msg = new Message\Bar();
-$msg->setFoo($foo);
-$msg->setName("张三");
-$bin = $msg->serializeToString();
+$bar = new \Pt\Message\Bar();
+$bar->setFoo($foo);
+$bar->setName("张三");
+$bar->setSex(\Pt\Enums\Sex::MALE);
+$bar->setHobbies(["basketball", "football"]);
 
-# echo $bin . PHP_EOL;
+// 将class系列化为为binary
+$bin = $bar->serializeToString();
 
+echo "系列化：\n";
+var_dump($bin);
+
+echo PHP_EOL;
+echo "反系列化:" . PHP_EOL;
 # 反序列化（将二进制转化成类）
-$msg1 = new Message\Bar;
-$msg1->mergeFromString($bin);
-var_dump($msg1->getFoo()->getId());
-var_dump($msg1->getName());
+$bar1 = new \Pt\Message\Bar;
+try {
+    // 将binary反系列化为class
+    $bar1->mergeFromString($bin);
+
+    var_dump($bar1->getFoo()->getId());
+    var_dump($bar1->getName());
+    var_dump($bar1->getSex());
+    foreach ($bar1->getHobbies() as $hobby) {
+        var_dump($hobby);
+    }
+
+} catch (Exception $e) {
+    throw $e;
+}

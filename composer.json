@@ -4,7 +4,7 @@
         "psr-4": {
             "Protobuf\\Test\\": "src/",
             "GPBMetadata\\": "proto_php/GPBMetadata",
-            "Message\\": "proto_php/Message"
+            "Pt\\": "proto_php/Pt"
         }
     },
     "authors": [

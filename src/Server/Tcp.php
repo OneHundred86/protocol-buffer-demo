@@ -4,8 +4,8 @@
 namespace Protobuf\Test\Server;
 
 
-use Message\Bar;
-use Message\Foo;
+use Pt\Message\Bar;
+use Pt\Message\Foo;
 use Protobuf\Test\Lib\Pt;
 use Swoole\WebSocket\Frame;
 
@@ -55,13 +55,22 @@ class Tcp
         try {
             [$route, $bin] = Pt::bin2int($data);
 
-            if($route == 1){
-                $bar = new Bar();
-                $bar->mergeFromString($bin);
-                var_dump($bar->getFoo()->getId());
-                var_dump($bar->getName());
-            }else{
-                echo sprintf("unknown route: %s", $route) . PHP_EOL;
+            // 根据路由反系列化binary到class
+            switch ($route){
+                case 1 :
+                    $bar = new Bar();
+                    $bar->mergeFromString($bin);
+
+                    var_dump($bar->getFoo()->getId());
+                    var_dump($bar->getName());
+                    var_dump($bar->getSex());
+                    foreach ($bar->getHobbies() as $hobby) {
+                        var_dump($hobby);
+                    }
+
+                    break;
+                default:
+                    echo sprintf("unknown route: %s", $route) . PHP_EOL;
             }
 
             $server->send($fd, $data);
